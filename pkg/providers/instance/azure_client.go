@@ -18,8 +18,6 @@ package instance
 import (
 	"context"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/arm"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/cloud"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerservice/armcontainerservice/v4"
 	"github.com/azure/gpu-provisioner/pkg/auth/awesome"
@@ -56,18 +54,6 @@ func NewAZClientFromAPI(
 	}
 }
 
-func CreateAzClient(ctx context.Context, cfg *auth.Config) (*AZClient, error) {
-	klog.Infof("CreateAzClient")
-
-	var err error
-	azClient, err := NewAZClient(ctx, cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return azClient, nil
-}
-
 func NewAZClient(ctx context.Context, cfg *auth.Config) (*AZClient, error) {
 	klog.Infof("NewAZClient")
 	skuClient := compute.NewResourceSkusClient(cfg.SubscriptionID)
@@ -75,14 +61,7 @@ func NewAZClient(ctx context.Context, cfg *auth.Config) (*AZClient, error) {
 	//	If not E2E, we use the default options
 	var agentPoolClient AgentPoolsAPI
 	if isE2E {
-		optionsToUse := &arm.ClientOptions{}
-
-		e2eCloudConfig := auth.CloneCloudConfiguration(&cloud.AzurePublic)
-		e2eCloudConfig.Services[cloud.ResourceManager] = cloud.ServiceConfiguration{
-			Audience: auth.E2E_SERVICE_CONFIGURATION_AUDIENCE,
-			Endpoint: auth.HTTPSPrefix + auth.E2E_RP_INGRESS_ENDPOINT,
-		}
-		optionsToUse.ClientOptions.Cloud = *e2eCloudConfig
+		optionsToUse := prepareClientOptions(ctx)
 
 		httpClient, err := auth.BuildHTTPClient(ctx)
 		if err != nil {

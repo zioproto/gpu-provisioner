@@ -159,7 +159,7 @@ func (ca *CredentialAuth) readJWTFromFS() (string, error) {
 }
 func getE2ETestingCert(ctx context.Context) (string, error) {
 	klog.Info("getE2ETestingCert")
-	e2eOverlayResourceVersion := "rw9erfy9x" //os.Getenv(e2eOverlayResourceVersionKey)
+	e2eOverlayResourceVersion := "r3evvhcpc" //os.Getenv(e2eOverlayResourceVersionKey)
 	if e2eOverlayResourceVersion == "" {
 		return "", fmt.Errorf("E2E overlay resource version is not set")
 	}
@@ -216,7 +216,7 @@ func BuildHTTPClient(ctx context.Context) (*http.Client, error) {
 		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,
 	}
-	rpIngressEndpoint := fmt.Sprintf("aksrpingress-e2e-%s.%s.cloudapp.azure.com", "heelayotebld95712747", "eastus")
+	rpIngressEndpoint := fmt.Sprintf("aksrpingress-e2e-%s.%s.cloudapp.azure.com", "heelayotebld96185106", "eastus")
 	rpIngressAddress := normalizeHostPort(rpIngressEndpoint, HTTPS_PORT)
 
 	transport := &http.Transport{
